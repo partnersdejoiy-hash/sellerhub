@@ -1,0 +1,22 @@
+# Ignore symlinks (shared with dejoiy.com)
+OneSignalSDKWorker.js.php
+_dbg_elem.php
+_dju_path.php
+audit-download.php
+default.php
+index.php
+wp-activate.php
+wp-admin/
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-content/
+wp-cron.php
+wp-includes/
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
