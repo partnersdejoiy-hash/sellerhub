@@ -103,7 +103,11 @@ if (!$config) {
 $current_section = $section;
 $page_title = $config['title'] ?? 'Dashboard';
 
-// Start output
+$store_name = $store ? $store['name'] : 'Seller';
+$user_data = get_userdata($user_id);
+$display_name = $user_data ? $user_data->display_name : $store_name;
+$store_logo = $store && !empty($store['logo']) ? $store['logo'] : '';
+
 ob_start();
 ?>
 <!DOCTYPE html>
@@ -130,23 +134,71 @@ ob_start();
 <body>
 <div id="dso-app" class="dso-app">
     <!-- Top Bar -->
-    <div class="dso-topbar">
-        <button class="dso-menu-toggle" id="dso-menu-toggle" aria-label="Toggle menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div class="dso-topbar-title"><span class="dso-logo-text">🏪 Seller Hub</span></div>
-        <div class="dso-topbar-actions">
-            <button class="dso-search-toggle" id="dso-search-toggle" aria-label="Search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <header class="dso-topbar">
+        <div class="dso-topbar-left">
+            <button class="dso-menu-toggle" id="dso-menu-toggle" aria-label="Toggle menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
-            <a href="?section=notifications" class="dso-topbar-notif">
+            <a href="?section=dashboard" class="dso-topbar-brand">
+                <span class="dso-brand-icon">🏪</span>
+                <span class="dso-brand-text">DEJOIY <strong>Seller Hub</strong></span>
+            </a>
+        </div>
+        <div class="dso-topbar-center">
+            <button class="dso-search-trigger" id="dso-search-toggle" aria-label="Search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Search products, orders...</span>
+                <kbd>⌘K</kbd>
+            </button>
+        </div>
+        <div class="dso-topbar-right">
+            <a href="?section=dashboard" class="dso-topbar-link <?php echo $current_section === 'dashboard' ? 'active' : '' ?>">Dashboard</a>
+            <a href="https://dejoiy.com" target="_blank" class="dso-topbar-link">Storefront</a>
+            <div class="dso-topbar-divider"></div>
+            <button class="dso-topbar-icon-btn" id="dso-seller-ai-btn" title="Seller AI">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="10" y1="22" x2="14" y2="22"/></svg>
+            </button>
+            <a href="?section=notifications" class="dso-topbar-icon-btn dso-notif-btn" title="Notifications">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
                 <?php if ($unread_count > 0): ?>
                     <span class="dso-notif-badge"><?php echo $unread_count ?></span>
                 <?php endif; ?>
             </a>
+            <div class="dso-topbar-dropdown" id="dso-settings-dropdown">
+                <button class="dso-topbar-icon-btn" id="dso-settings-toggle" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                </button>
+                <div class="dso-dropdown-menu" id="dso-settings-menu">
+                    <div class="dso-dropdown-header">Settings</div>
+                    <a href="?section=settings" class="dso-dropdown-item">Account Info</a>
+                    <a href="?section=store" class="dso-dropdown-item">Store Settings</a>
+                    <a href="?section=settings" class="dso-dropdown-item">Notification Preferences</a>
+                    <a href="?section=shipping" class="dso-dropdown-item">Shipping Settings</a>
+                    <div class="dso-dropdown-divider"></div>
+                    <a href="<?php echo wp_logout_url($site_url . '/seller-hub.php'); ?>" class="dso-dropdown-item dso-dropdown-danger">Log Out</a>
+                </div>
+            </div>
+            <div class="dso-topbar-dropdown" id="dso-help-dropdown">
+                <button class="dso-topbar-icon-btn" id="dso-help-toggle" title="Help">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </button>
+                <div class="dso-dropdown-menu" id="dso-help-menu">
+                    <div class="dso-dropdown-header">Help & Support</div>
+                    <a href="?section=support" class="dso-dropdown-item">Manage Support Tickets</a>
+                    <a href="https://dejoiy.com/help/" target="_blank" class="dso-dropdown-item">Resources & Help Center</a>
+                    <a href="https://dejoiy.com/seller-university/" target="_blank" class="dso-dropdown-item">Seller University</a>
+                </div>
+            </div>
+            <div class="dso-topbar-user">
+                <?php if ($store_logo): ?>
+                    <img src="<?php echo esc_url($store_logo) ?>" alt="" class="dso-user-avatar" />
+                <?php else: ?>
+                    <div class="dso-user-avatar dso-user-avatar-placeholder"><?php echo strtoupper(substr($display_name, 0, 1)) ?></div>
+                <?php endif; ?>
+                <span class="dso-user-name"><?php echo esc_html($display_name) ?></span>
+            </div>
         </div>
-    </div>
+    </header>
 
     <!-- Sidebar -->
     <aside class="dso-sidebar" id="dso-sidebar">
@@ -191,7 +243,7 @@ ob_start();
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 <span>Back to My Account</span>
             </a>
-            <a href="<?php echo wp_logout_url('https://dejoiy.com'); ?>" class="dso-nav-link dso-nav-logout">
+            <a href="<?php echo wp_logout_url($site_url); ?>" class="dso-nav-link dso-nav-logout">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 <span>Logout</span>
             </a>
@@ -199,6 +251,18 @@ ob_start();
     </aside>
 
     <div class="dso-sidebar-overlay" id="dso-sidebar-overlay"></div>
+
+    <!-- Search Overlay -->
+    <div class="dso-search-overlay" id="dso-search-overlay">
+        <div class="dso-search-modal">
+            <div class="dso-search-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="dso-search-input" class="dso-search-input" placeholder="Search products, orders, settings..." autocomplete="off" />
+                <kbd class="dso-search-esc">ESC</kbd>
+            </div>
+            <div class="dso-search-results" id="dso-search-results"></div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="dso-main" id="dso-main">
@@ -224,9 +288,9 @@ ob_start();
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
             <span>Products</span>
         </a>
-        <a href="?section=analytics" class="dso-bottom-nav-item <?php echo $current_section === 'analytics' ? 'dso-bottom-active' : '' ?>">
+        <a href="?section=reports" class="dso-bottom-nav-item <?php echo $current_section === 'reports' ? 'dso-bottom-active' : '' ?>">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-            <span>Analytics</span>
+            <span>Reports</span>
         </a>
         <a href="?section=finance" class="dso-bottom-nav-item <?php echo $current_section === 'finance' ? 'dso-bottom-active' : '' ?>">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
@@ -239,7 +303,6 @@ ob_start();
 <script src="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/js/seller-os.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar toggle
     var toggle = document.getElementById('dso-menu-toggle');
     var sidebar = document.getElementById('dso-sidebar');
     var overlay = document.getElementById('dso-sidebar-overlay');
@@ -255,12 +318,67 @@ document.addEventListener('DOMContentLoaded', function() {
     if (overlay) overlay.addEventListener('click', closeSidebar);
     if (close) close.addEventListener('click', closeSidebar);
 
-    // Nav children
     document.querySelectorAll('.dso-nav-item').forEach(function(item) {
         var chevron = item.querySelector('.dso-nav-chevron');
         if (chevron) {
             item.addEventListener('mouseenter', function() { item.classList.add('dso-nav-expanded'); });
             item.addEventListener('mouseleave', function() { item.classList.remove('dso-nav-expanded'); });
+        }
+    });
+
+    // Settings dropdown
+    var settingsToggle = document.getElementById('dso-settings-toggle');
+    var settingsMenu = document.getElementById('dso-settings-menu');
+    if (settingsToggle && settingsMenu) {
+        settingsToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            settingsMenu.classList.toggle('dso-dropdown-open');
+            var helpMenu = document.getElementById('dso-help-menu');
+            if (helpMenu) helpMenu.classList.remove('dso-dropdown-open');
+        });
+    }
+
+    // Help dropdown
+    var helpToggle = document.getElementById('dso-help-toggle');
+    var helpMenu = document.getElementById('dso-help-menu');
+    if (helpToggle && helpMenu) {
+        helpToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            helpMenu.classList.toggle('dso-dropdown-open');
+            var settingsMenu = document.getElementById('dso-settings-menu');
+            if (settingsMenu) settingsMenu.classList.remove('dso-dropdown-open');
+        });
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', function() {
+        if (settingsMenu) settingsMenu.classList.remove('dso-dropdown-open');
+        if (helpMenu) helpMenu.classList.remove('dso-dropdown-open');
+    });
+
+    // Search overlay
+    var searchToggle = document.getElementById('dso-search-toggle');
+    var searchOverlay = document.getElementById('dso-search-overlay');
+    var searchInput = document.getElementById('dso-search-input');
+    if (searchToggle && searchOverlay) {
+        searchToggle.addEventListener('click', function() {
+            searchOverlay.classList.add('dso-search-open');
+            if (searchInput) searchInput.focus();
+        });
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === searchOverlay) searchOverlay.classList.remove('dso-search-open');
+        });
+    }
+    document.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            if (searchOverlay) {
+                searchOverlay.classList.add('dso-search-open');
+                if (searchInput) searchInput.focus();
+            }
+        }
+        if (e.key === 'Escape') {
+            if (searchOverlay) searchOverlay.classList.remove('dso-search-open');
         }
     });
 });
