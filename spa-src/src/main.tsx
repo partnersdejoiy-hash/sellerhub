@@ -12,3 +12,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </HashRouter>
   </React.StrictMode>,
 )
+
+// Signal the boot splash to fade out once the app shell has mounted.
+requestAnimationFrame(() => window.dispatchEvent(new Event('dsa-app-ready')))
