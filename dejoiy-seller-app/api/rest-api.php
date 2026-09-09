@@ -61,6 +61,16 @@ class DSA_REST_API {
 			'callback' => [__CLASS__, 'products_bulk'],
 			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
 		]);
+		register_rest_route($ns, '/products/(?P<id>\d+)/duplicate', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'product_duplicate'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/products/(?P<id>\d+)/validate', [
+			'methods' => 'GET',
+			'callback' => [__CLASS__, 'product_validate'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
 
 		// ── Orders ──
 		register_rest_route($ns, '/orders', [
@@ -145,6 +155,70 @@ class DSA_REST_API {
 		register_rest_route($ns, '/categories', [
 			'methods' => 'GET',
 			'callback' => [__CLASS__, 'categories'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+
+		// ── Seller identity: ID, GST, KYC, bank, onboarding ──
+		register_rest_route($ns, '/seller/identity', [
+			'methods' => 'GET',
+			'callback' => [__CLASS__, 'seller_identity'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/profile', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_profile_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/gst', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_gst_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/kyc', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_kyc_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/bank', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_bank_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/onboarding', [
+			'methods' => 'GET',
+			'callback' => [__CLASS__, 'seller_onboarding'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+
+		// ── Seller identity: ID, GST, KYC, bank, onboarding ──
+		register_rest_route($ns, '/seller/identity', [
+			'methods' => 'GET',
+			'callback' => [__CLASS__, 'seller_identity'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/profile', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_profile_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/gst', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_gst_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/kyc', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_kyc_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/bank', [
+			'methods' => 'POST',
+			'callback' => [__CLASS__, 'seller_bank_save'],
+			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
+		]);
+		register_rest_route($ns, '/seller/onboarding', [
+			'methods' => 'GET',
+			'callback' => [__CLASS__, 'seller_onboarding'],
 			'permission_callback' => ['DSA_Auth', 'require_seller_or_admin'],
 		]);
 
@@ -271,6 +345,32 @@ class DSA_REST_API {
 		$res = DSA_Products::set_stock($pid, $qty, $delta);
 		if (is_wp_error($res)) return $res;
 		return rest_ensure_response($res);
+	}
+
+	public static function product_duplicate($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		$admin = DSA_Auth::is_admin();
+		$res = DSA_Products::duplicate(absint($request['id']), $vendor, $admin);
+		if (is_wp_error($res)) return $res;
+		return rest_ensure_response($res);
+	}
+
+	public static function product_validate($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		$admin = DSA_Auth::is_admin();
+		$pid = absint($request['id']);
+		if (!DSA_Products::owns($pid, $vendor, $admin)) {
+			return new WP_Error('dsa_forbidden', 'You do not own this product.', ['status' => 403]);
+		}
+		$p = wc_get_product($pid);
+		if (!$p) return new WP_Error('dsa_not_found', 'Product not found.', ['status' => 404]);
+		$res = DSA_Products::validate($p);
+		if (is_wp_error($res)) {
+			return new WP_Error('dsa_validation', $res->get_error_message(), ['status' => 422]);
+		}
+		return rest_ensure_response(['valid' => true]);
 	}
 
 	public static function products_bulk($request) {
@@ -482,6 +582,66 @@ class DSA_REST_API {
 			$out[] = ['id' => $t->term_id, 'name' => $t->name, 'parent' => $t->parent];
 		}
 		return rest_ensure_response($out);
+	}
+
+	// ── Seller identity endpoints ──
+
+	public static function seller_identity($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		return rest_ensure_response([
+			'sellerId'    => DSA_Seller::seller_id($vendor),
+			'immutable'   => true,
+			'profile'     => DSA_Seller::profile($vendor),
+			'gst'         => DSA_Seller::gst($vendor),
+			'kyc'         => DSA_Seller::kyc($vendor),
+			'bank'        => DSA_Seller::bank($vendor),
+			'eligibility' => DSA_Seller::eligibility($vendor),
+		]);
+	}
+
+	public static function seller_profile_save($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		$res = DSA_Seller::save_profile($vendor, DSA_Http::body($request));
+		if (is_wp_error($res)) return $res;
+		return rest_ensure_response($res);
+	}
+
+	public static function seller_gst_save($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		$res = DSA_Seller::save_gst($vendor, DSA_Http::body($request));
+		if (is_wp_error($res)) return $res;
+		return rest_ensure_response($res);
+	}
+
+	public static function seller_kyc_save($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		$res = DSA_Seller::save_kyc($vendor, DSA_Http::body($request));
+		if (is_wp_error($res)) return $res;
+		return rest_ensure_response($res);
+	}
+
+	public static function seller_bank_save($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		$res = DSA_Seller::save_bank($vendor, DSA_Http::body($request));
+		if (is_wp_error($res)) return $res;
+		return rest_ensure_response($res);
+	}
+
+	public static function seller_onboarding($request) {
+		$vendor = DSA_Auth::resolve_vendor($request);
+		if (is_wp_error($vendor)) return $vendor;
+		if (!$vendor) return new WP_Error('dsa_forbidden', 'Vendor account required.', ['status' => 403]);
+		return rest_ensure_response(DSA_Seller::onboarding($vendor));
 	}
 
 	// ── Finance ──

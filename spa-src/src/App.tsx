@@ -17,6 +17,7 @@ import Store from './pages/Store'
 import Settings from './pages/Settings'
 import Support from './pages/Support'
 import Joi from './pages/Joi'
+import Onboarding from './pages/Onboarding'
 
 const NAV: { section: string; items: { to: string; ico: string; label: string; badge?: 'orders' | 'notifications' }[] }[] = [
   {
@@ -43,6 +44,7 @@ const NAV: { section: string; items: { to: string; ico: string; label: string; b
       { to: '/reviews', ico: '⭐', label: 'Reviews' },
       { to: '/store', ico: '🏬', label: 'Store' },
       { to: '/joi', ico: '🤖', label: 'JOI AI' },
+      { to: '/onboarding', ico: '🪪', label: 'Onboarding & KYC' },
     ],
   },
   {
@@ -204,6 +206,7 @@ export default function App() {
             <Route path="/store" element={<Store />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/:tab" element={<Settings />} />
+            <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/support" element={<Support />} />
             <Route path="/joi" element={<Joi />} />
             <Route path="/more" element={<More />} />

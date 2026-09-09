@@ -43,6 +43,16 @@ export default function Products() {
     setSelected(next)
   }
 
+  async function duplicate(id: number) {
+    try {
+      const copy = await api.duplicateProduct(id)
+      toast.show('Copy created as draft ✓')
+      navigate('/products/' + copy.id)
+    } catch (e: unknown) {
+      toast.show((e as Error).message, true)
+    }
+  }
+
   async function bulk(action: string, value?: Record<string, unknown>) {
     if (!selected.size) return
     if (action === 'delete' && !confirm(`Delete ${selected.size} product(s) permanently?`)) return
@@ -125,7 +135,7 @@ export default function Products() {
                 </thead>
                 <tbody>
                   {items.map((p) => (
-                    <ProductRow key={p.id} p={p} selected={selected.has(p.id)} onToggle={() => toggle(p.id)} onSaved={reload} toast={toast} />
+                    <ProductRow key={p.id} p={p} selected={selected.has(p.id)} onToggle={() => toggle(p.id)} onSaved={reload} toast={toast} onDuplicate={() => duplicate(p.id)} />
                   ))}
                 </tbody>
               </table>
@@ -147,8 +157,8 @@ export default function Products() {
   )
 }
 
-function ProductRow({ p, selected, onToggle, onSaved, toast }: {
-  p: Product; selected: boolean; onToggle: () => void; onSaved: () => void; toast: { show: (m: string, e?: boolean) => void }
+function ProductRow({ p, selected, onToggle, onSaved, toast, onDuplicate }: {
+  p: Product; selected: boolean; onToggle: () => void; onSaved: () => void; toast: { show: (m: string, e?: boolean) => void }; onDuplicate: () => void
 }) {
   const [stockVal, setStockVal] = useState(p.stock !== null && p.stock !== undefined ? String(p.stock) : '')
   const st = PRODUCT_STATUS[p.status] || { label: p.status, cls: 'badge-muted' }
@@ -191,6 +201,7 @@ function ProductRow({ p, selected, onToggle, onSaved, toast }: {
       </td>
       <td data-label="Sales" className="cell-num">{p.sales}</td>
       <td data-label="Modified" style={{ whiteSpace: 'nowrap', color: 'var(--ink-400)', fontSize: 12.5 }}>{dateFmt(p.dateModified)}</td>
+      <td data-label="" className="cell-num"><button className="btn btn-sm btn-ghost" title="Duplicate" onClick={onDuplicate}>⧉</button></td>
     </tr>
   )
 }

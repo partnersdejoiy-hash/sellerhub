@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { api, Product, Category, Media, Variation } from '../api'
 import { ErrorBox, Loading, money, useToast } from '../ui'
 
-type Draft = Partial<Product> & { categoryIds?: number[]; galleryIds?: number[]; imageId?: number }
+type Draft = Partial<Product> & { categoryIds?: number[]; galleryIds?: number[]; imageId?: number; accountNumberInput?: string; seoTitle?: string; seoDescription?: string }
 
 const SECTIONS = [
   { key: 'basic', label: 'Basic', ico: '📝' },
@@ -12,6 +12,7 @@ const SECTIONS = [
   { key: 'inventory', label: 'Inventory', ico: '📋' },
   { key: 'shipping', label: 'Shipping', ico: '🚚' },
   { key: 'variations', label: 'Variations', ico: '🎨' },
+  { key: 'seo', label: 'SEO', ico: '🔍' },
   { key: 'advanced', label: 'Advanced', ico: '⚙️' },
 ]
 
@@ -144,6 +145,7 @@ export default function ProductEditor() {
                 <input className="input" value={draft.name || ''} onChange={(e) => set('name', e.target.value)} placeholder="e.g. Handcrafted Blue Pottery Vase" autoFocus />
               </div>
               <div className="form-grid">
+              <div className="form-grid">
                 <div className="field">
                   <label>Product type</label>
                   <select className="select" value={draft.type} onChange={(e) => { set('type', e.target.value); setTypeTouched(true) }} disabled={typeTouched && !isEdit}>
@@ -152,6 +154,11 @@ export default function ProductEditor() {
                   </select>
                   <div className="help">Type locks after first save.</div>
                 </div>
+                <div className="field">
+                  <label>Brand</label>
+                  <input className="input" value={draft.brand || ''} onChange={(e) => set('brand', e.target.value)} placeholder="e.g. DEJOIY Basics" />
+                </div>
+              </div>
                 <div className="field">
                   <label>Status</label>
                   <select className="select" value={draft.status} onChange={(e) => set('status', e.target.value)}>
@@ -216,6 +223,19 @@ export default function ProductEditor() {
                     <div className="help" style={{ color: 'var(--danger-600)' }}>Sale price should be below regular price.</div>
                   )}
                 </div>
+                <div className="field">
+                  <label>Sale starts</label>
+                  <input className="input" type="datetime-local" value={draft.saleFrom ? draft.saleFrom.slice(0, 16) : ''} onChange={(e) => set('saleFrom', e.target.value)} />
+                </div>
+                <div className="field">
+                  <label>Sale ends</label>
+                  <input className="input" type="datetime-local" value={draft.saleTo ? draft.saleTo.slice(0, 16) : ''} onChange={(e) => set('saleTo', e.target.value)} />
+                </div>
+                <div className="field">
+                  <label>Cost per item (₹)</label>
+                  <input className="input" type="number" min="0" step="0.01" value={draft.costPrice ?? ''} onChange={(e) => set('costPrice', e.target.value === '' ? null : parseFloat(e.target.value))} />
+                  <div className="help">Private — used for profit math, never shown to buyers.</div>
+                </div>
               </div>
               <div className="field">
                 <label>Tax status</label>
@@ -275,9 +295,19 @@ export default function ProductEditor() {
                   </select>
                 </div>
               )}
-              <div className="field">
-                <label>SKU</label>
-                <input className="input" value={draft.sku || ''} onChange={(e) => set('sku', e.target.value)} placeholder="Unique product code" />
+              <div className="form-grid">
+                <div className="field">
+                  <label>SKU</label>
+                  <input className="input" value={draft.sku || ''} onChange={(e) => set('sku', e.target.value)} placeholder="Unique product code" />
+                </div>
+                <div className="field">
+                  <label>GTIN / Barcode</label>
+                  <input className="input" value={draft.gtin || ''} onChange={(e) => set('gtin', e.target.value)} placeholder="EAN/UPC/ISBN" />
+                </div>
+                <div className="field">
+                  <label>MPN</label>
+                  <input className="input" value={draft.mpn || ''} onChange={(e) => set('mpn', e.target.value)} placeholder="Manufacturer part number" />
+                </div>
               </div>
             </>
           )}
@@ -309,11 +339,37 @@ export default function ProductEditor() {
                 </label>
                 <label style={{ margin: 0 }}>Virtual product (no shipping)</label>
               </div>
+              <div className="field" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <label className="switch">
+                  <input type="checkbox" checked={!!draft.soldIndividually} onChange={(e) => set('soldIndividually', e.target.checked)} />
+                  <span className="track" />
+                </label>
+                <label style={{ margin: 0 }}>Sold individually (limit 1 per order)</label>
+              </div>
             </>
           )}
 
           {section === 'variations' && (
             <VariationsBuilder draft={draft} set={set} />
+          )}
+
+          {section === 'seo' && (
+            <>
+              <div className="field">
+                <label>SEO title</label>
+                <input className="input" value={draft.seoTitle || ''} onChange={(e) => set('seoTitle', e.target.value)} placeholder={draft.name || 'Defaults to product name'} maxLength={60} />
+                <div className="help">{(draft.seoTitle || '').length}/60 characters</div>
+              </div>
+              <div className="field">
+                <label>Meta description</label>
+                <textarea className="textarea" rows={3} value={draft.seoDescription || ''} onChange={(e) => set('seoDescription', e.target.value)} maxLength={160} placeholder="Shown in Google results under the title" />
+                <div className="help">{(draft.seoDescription || '').length}/160 characters</div>
+              </div>
+              <div className="field">
+                <label>URL slug</label>
+                <input className="input" value={draft.slug || ''} onChange={(e) => set('slug', e.target.value)} placeholder="auto-generated-from-name" />
+              </div>
+            </>
           )}
 
           {section === 'advanced' && (

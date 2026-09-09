@@ -117,6 +117,20 @@ class DSA_Products {
 			'editUrl'      => admin_url('post.php?post=' . $p->get_id() . '&action=edit'),
 		];
 
+		// Extended commerce fields.
+		$data['gtin'] = get_post_meta($p->get_id(), '_dsa_gtin', true);
+		$data['mpn'] = get_post_meta($p->get_id(), '_dsa_mpn', true);
+		$data['brand'] = get_post_meta($p->get_id(), '_dsa_brand', true);
+		$data['costPrice'] = get_post_meta($p->get_id(), '_dsa_cost_price', true) !== '' ? (float) get_post_meta($p->get_id(), '_dsa_cost_price', true) : null;
+		$data['soldIndividually'] = (bool) $p->get_sold_individually();
+		$data['menuOrder'] = $p->get_menu_order();
+		$data['seoTitle'] = get_post_meta($p->get_id(), '_dsa_seo_title', true);
+		$data['seoDescription'] = get_post_meta($p->get_id(), '_dsa_seo_description', true);
+		$sale_from = get_post_meta($p->get_id(), '_sale_price_dates_from', true);
+		$sale_to = get_post_meta($p->get_id(), '_sale_price_dates_to', true);
+		$data['saleFrom'] = $sale_from ? date_i18n('c', (int) $sale_from) : '';
+		$data['saleTo'] = $sale_to ? date_i18n('c', (int) $sale_to) : '';
+
 		if ('simple' === $p->get_type()) {
 			$data['weight'] = (float) $p->get_weight();
 			$data['dimensions'] = [
@@ -220,7 +234,14 @@ class DSA_Products {
 		$product_id = $p->get_id();
 
 		if (isset($payload['status']) && in_array($payload['status'], ['publish', 'draft', 'pending', 'private'], true)) {
-			wp_update_post(['ID' => $product_id, 'post_status' => $payload['status']]);
+			// Publishing requires server-side validation — never silently fail.
+			if ('publish' === $payload['status']) {
+				$p_check = wc_get_product($product_id);
+				// Name/price etc. may be set in this same payload; validate after apply.
+				$defer_publish = true;
+			} else {
+				wp_update_post(['ID' => $product_id, 'post_status' => $payload['status']]);
+			}
 		}
 		if (isset($payload['description'])) $p->set_description(wp_kses_post(wp_unslash($payload['description'])));
 		if (isset($payload['shortDescription'])) $p->set_short_description(wp_kses_post(wp_unslash($payload['shortDescription'])));
@@ -236,6 +257,29 @@ class DSA_Products {
 		if (isset($payload['reviewsAllowed'])) $p->set_reviews_allowed((bool) $payload['reviewsAllowed']);
 		if (isset($payload['purchaseNote'])) $p->set_purchase_note(sanitize_textarea_field(wp_unslash($payload['purchaseNote'])));
 		if (isset($payload['slug'])) $p->set_slug(sanitize_title($payload['slug']));
+		if (isset($payload['soldIndividually'])) $p->set_sold_individually((bool) $payload['soldIndividually']);
+		if (isset($payload['menuOrder'])) $p->set_menu_order(absint($payload['menuOrder']));
+
+		// Extended meta fields.
+		$meta_map = [
+			'_dsa_gtin' => 'gtin', '_dsa_mpn' => 'mpn', '_dsa_brand' => 'brand',
+			'_dsa_seo_title' => 'seoTitle', '_dsa_seo_description' => 'seoDescription',
+		];
+		foreach ($meta_map as $meta_key => $field) {
+			if (isset($payload[$field])) {
+				update_post_meta($product_id, $meta_key, sanitize_text_field(wp_unslash($payload[$field])));
+			}
+		}
+		if (isset($payload['costPrice'])) {
+			update_post_meta($product_id, '_dsa_cost_price', $payload['costPrice'] === '' || null === $payload['costPrice'] ? '' : (float) $payload['costPrice']);
+		}
+		// Sale schedule.
+		if (array_key_exists('saleFrom', $payload) || array_key_exists('saleTo', $payload)) {
+			$from = isset($payload['saleFrom']) && $payload['saleFrom'] ? strtotime($payload['saleFrom']) : '';
+			$to = isset($payload['saleTo']) && $payload['saleTo'] ? strtotime($payload['saleTo']) : '';
+			update_post_meta($product_id, '_sale_price_dates_from', $from);
+			update_post_meta($product_id, '_sale_price_dates_to', $to);
+		}
 
 		// Tax.
 		if (isset($payload['taxStatus']) && in_array($payload['taxStatus'], ['taxable', 'shipping', 'none'], true)) $p->set_tax_status($payload['taxStatus']);
@@ -286,6 +330,18 @@ class DSA_Products {
 		// Variations for variable products.
 		if (isset($payload['variations']) && is_array($payload['variations']) && 'variable' === $p->get_type()) {
 			self::sync_variations($p, $payload['variations'], $payload);
+		}
+
+		// Deferred publish: validate first, publish only when clean.
+		if (!empty($defer_publish)) {
+			$final = wc_get_product($product_id);
+			$check = self::validate($final);
+			if (is_wp_error($check)) {
+				// Keep as draft; surface validation errors to seller.
+				wp_update_post(['ID' => $product_id, 'post_status' => 'draft']);
+				return $check;
+			}
+			wp_update_post(['ID' => $product_id, 'post_status' => 'publish']);
 		}
 		return wc_get_product($product_id);
 	}
@@ -352,6 +408,78 @@ class DSA_Products {
 			$parent->set_attributes($attributes);
 			$parent->save();
 		}
+	}
+
+	/**
+	 * Server-side validation before publish. Returns WP_Error or true.
+	 */
+	public static function validate($p) {
+		$errors = [];
+		if (!trim($p->get_name())) $errors[] = 'Product name is required.';
+		$price = $p->get_price('edit');
+		if ('' === $price || (float) $price <= 0) $errors[] = 'Set a price above ₹0 before publishing.';
+		$sku = $p->get_sku();
+		if ($sku) {
+			$existing = wc_get_product_id_by_sku($sku);
+			if ($existing && (int) $existing !== $p->get_id()) {
+				$errors[] = 'SKU "' . $sku . '" is already used by another product.';
+			}
+		}
+		if (!wp_get_attachment_url($p->get_image_id()) && !count($p->get_gallery_image_ids())) {
+			$errors[] = 'Add at least one product image.';
+		}
+		if (!count($p->get_category_ids())) {
+			$errors[] = 'Choose at least one category.';
+		}
+		if ($p->get_sale_price('edit') !== '' && (float) $p->get_sale_price('edit') >= (float) $p->get_regular_price('edit') && (float) $p->get_regular_price('edit') > 0) {
+			$errors[] = 'Sale price must be lower than the regular price.';
+		}
+		if ('variable' === $p->get_type()) {
+			$children = $p->get_children();
+			if (!count($children)) $errors[] = 'A variable product needs at least one variation.';
+			foreach ($children as $vid) {
+				$v = wc_get_product($vid);
+				if ($v && '' === $v->get_price('edit')) {
+					$errors[] = 'Every variation needs a price (variation #' . $vid . ' has none).';
+					break;
+				}
+			}
+		}
+		if (count($errors)) {
+			return new WP_Error('dsa_validation', implode(' ', $errors), ['status' => 422, 'errors' => $errors]);
+		}
+		return true;
+	}
+
+	/**
+	 * Duplicate a product (vendor-owned copy, draft status).
+	 */
+	public static function duplicate($product_id, $vendor_id, $admin) {
+		$p = wc_get_product($product_id);
+		if (!$p) return new WP_Error('dsa_not_found', 'Product not found.', ['status' => 404]);
+		if (!self::owns($product_id, $vendor_id, $admin)) {
+			return new WP_Error('dsa_forbidden', 'You do not own this product.', ['status' => 403]);
+		}
+		$new_id = $p->get_id();
+		$copy = new WC_Product_Simple();
+		if ('variable' === $p->get_type()) $copy = new WC_Product_Variable();
+		$copy->set_name($p->get_name() . ' (Copy)');
+		$copy->set_status('draft');
+		$copy->set_regular_price($p->get_regular_price('edit'));
+		$copy->set_sale_price($p->get_sale_price('edit'));
+		$copy->set_description($p->get_description());
+		$copy->set_short_description($p->get_short_description());
+		$copy->set_manage_stock($p->get_manage_stock());
+		if ($p->get_manage_stock()) $copy->set_stock_quantity($p->get_stock_quantity());
+		$copy->set_image_id($p->get_image_id());
+		$copy->set_gallery_image_ids($p->get_gallery_image_ids());
+		$copy->set_category_ids($p->get_category_ids());
+		$copy->set_tag_ids($p->get_tag_ids());
+		$new_id = $copy->save();
+		if ($vendor_id) {
+			wp_update_post(['ID' => $new_id, 'post_author' => (int) $vendor_id]);
+		}
+		return self::serialize(wc_get_product($new_id));
 	}
 
 	/**

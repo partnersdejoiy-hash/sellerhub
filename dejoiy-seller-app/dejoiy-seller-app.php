@@ -24,6 +24,7 @@ require_once DSA_PATH . 'includes/class-dsa-vendor.php';
 require_once DSA_PATH . 'includes/class-dsa-http.php';
 require_once DSA_PATH . 'includes/class-dsa-finance.php';
 require_once DSA_PATH . 'includes/class-dsa-analytics.php';
+require_once DSA_PATH . 'includes/class-dsa-seller.php';
 require_once DSA_PATH . 'includes/class-dsa-orders.php';
 require_once DSA_PATH . 'includes/class-dsa-products.php';
 require_once DSA_PATH . 'api/rest-api.php';

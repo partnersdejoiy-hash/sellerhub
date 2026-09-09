@@ -85,6 +85,14 @@ export const api = {
     return json as Media
   },
   ai: (message: string) => request<{ reply: string }>('/ai', { method: 'POST', body: JSON.stringify({ message }) }),
+  sellerIdentity: () => request<SellerIdentity>('/seller/identity'),
+  saveSellerProfile: (body: Partial<SellerProfile>) => request<SellerProfile>('/seller/profile', { method: 'POST', body: JSON.stringify(body) }),
+  saveGst: (body: Partial<GstInfo>) => request<GstInfo>('/seller/gst', { method: 'POST', body: JSON.stringify(body) }),
+  saveKyc: (body: Partial<KycInfo>) => request<KycInfo>('/seller/kyc', { method: 'POST', body: JSON.stringify(body) }),
+  saveBank: (body: Partial<BankInfo>) => request<BankInfo>('/seller/bank', { method: 'POST', body: JSON.stringify(body) }),
+  onboarding: () => request<Onboarding>('/seller/onboarding'),
+  duplicateProduct: (id: number) => request<Product>(`/products/${id}/duplicate`, { method: 'POST' }),
+  validateProduct: (id: number) => request<{ valid: boolean }>(`/products/${id}/validate`),
 }
 
 function qs(params: Record<string, string | number>) {
@@ -144,6 +152,17 @@ export interface Product {
   reviewsAllowed?: boolean
   lowStockThreshold?: number
   backorders?: string
+  gtin?: string
+  mpn?: string
+  brand?: string
+  costPrice?: number | null
+  soldIndividually?: boolean
+  menuOrder?: number
+  seoTitle?: string
+  seoDescription?: string
+  slug?: string
+  saleFrom?: string
+  saleTo?: string
   variations?: Variation[]
   authorId?: number
   editUrl?: string
@@ -238,6 +257,64 @@ export interface Store {
   country: string
   state: string
   social: { facebook: string; twitter: string; instagram: string; youtube: string; linkedin: string }
+}
+
+export interface SellerProfile {
+  businessType: string
+  legalName: string
+  dob: string
+  storeCategory: string
+  supportEmail: string
+  website: string
+  nonGstDeclared: boolean
+  declaration: boolean
+}
+export interface GstInfo {
+  hasGstin: boolean
+  gstin: string
+  legalName: string
+  state: string
+  status: string
+  pan: string
+  businessType: string
+}
+export interface KycInfo {
+  panName: string
+  panNumber: string
+  panDocId: number
+  addressProof: string
+  addressDocId: number
+  status: string
+  submittedAt: string
+  remarks: string
+}
+export interface BankInfo {
+  holderName: string
+  bankName: string
+  accountMasked: string
+  ifsc: string
+  accountType: string
+  upi: string
+  status: string
+}
+export interface SellerIdentity {
+  sellerId: string
+  immutable: boolean
+  profile: SellerProfile
+  gst: GstInfo
+  kyc: KycInfo
+  bank: BankInfo
+  eligibility: { sellerType: string; status: string; reasons: string[]; decidedAt: string }
+}
+export interface OnboardingStep { key: string; label: string; done: boolean; link: string }
+export interface Onboarding {
+  steps: OnboardingStep[]
+  completed: number
+  total: number
+  percent: number
+  next: string | null
+  sellerType: string
+  eligibility: string
 }
 
 export interface Dashboard {
