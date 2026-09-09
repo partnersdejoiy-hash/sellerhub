@@ -41,13 +41,25 @@ add_action('template_redirect', function () {
 /**
  * My Account menu: remove WCFM/seller-hub entries, add ONE new-tab CTA.
  */
+/**
+ * My Account menu: remove WCFM/seller-hub entries, add ONE new-tab CTA.
+ * Runs at PHP_INT_MAX because WCFMmp re-inserts 'wcfm-store-manager' in its
+ * own later filter (class-wcfmmp-frontend.php) — the last filter must win.
+ */
 add_filter('woocommerce_account_menu_items', function ($items) {
+    // WCFM registers its dashboard under keys like wcfm-store-manager / wcfm —
+    // strip every WCFM-prefixed entry plus known legacy keys.
+    foreach (array_keys($items) as $key) {
+        if (strpos((string) $key, 'wcfm') === 0
+            || in_array($key, ['seller-hub', 'store-manager', 'store-manager-child'], true)) {
+            unset($items[$key]);
+        }
+    }
     $cta = '<span id="dsa-open-seller-app" style="display:flex;align-items:center;gap:8px;color:#7c3aed;font-weight:600">'
         . '🚀 Open Seller App <span style="font-size:11px;opacity:.6">↗</span></span>';
-    unset($items['seller-hub'], $items['wcfm'], $items['store-manager'], $items['store-manager-child']);
     $items['dsa-seller-app'] = $cta;
     return $items;
-}, 100);
+}, PHP_INT_MAX);
 
 /** Register the CTA endpoint so WooCommerce renders it as a menu entry. */
 add_action('init', function () {
