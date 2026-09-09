@@ -120,9 +120,9 @@ export default function ProductEditor() {
         <div className="progress"><div style={{ width: `${completion}%` }} /></div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 18, alignItems: 'start' }}>
+      <div className="editor-grid">
         {/* Section rail */}
-        <div className="card card-pad" style={{ position: 'sticky', top: 80, display: 'grid', gap: 4 }}>
+        <div className="card editor-rail">
           {SECTIONS.map((s) => (
             <button
               key={s.key}

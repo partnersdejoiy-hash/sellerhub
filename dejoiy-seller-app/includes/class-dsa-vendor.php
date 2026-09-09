@@ -56,6 +56,36 @@ class DSA_Vendor {
 			if ($src) $out['banner'] = $src;
 		}
 
+		// WCFM compound profile settings (canonical store of shop fields) — fill any
+		// empty values before falling back to direct usermeta.
+		if ($vendor_id) {
+			$ps = get_user_meta($vendor_id, 'wcfmmp_profile_settings', true);
+			if (is_array($ps)) {
+				if (!empty($ps['shop_name']) && empty($out['storeName'])) $out['storeName'] = $ps['shop_name'];
+				if (!empty($ps['store_name']) && empty($out['storeName'])) $out['storeName'] = $ps['store_name'];
+				if (!empty($ps['about']) && empty($out['description'])) $out['description'] = wp_strip_all_tags($ps['about']);
+				if (!empty($ps['phone']) && empty($out['phone'])) $out['phone'] = $ps['phone'];
+				$ps_addr = isset($ps['address']) && is_array($ps['address']) ? $ps['address'] : [];
+				$ps_map = ['street_1' => 'address1', 'street_2' => 'address2', 'city' => 'city', 'zip' => 'zip', 'state' => 'state', 'country' => 'country'];
+				foreach ($ps_map as $ps_key => $field) {
+					if (!empty($ps_addr[$ps_key]) && empty($out[$field])) $out[$field] = $ps_addr[$ps_key];
+				}
+			}
+		}
+
+		// Direct usermeta fallbacks (same keys save_shop writes) — WCFM info array
+		// can be missing/empty on some builds.
+		if ($vendor_id) {
+			$m = [
+				'description' => 'about', 'phone' => 'phone', 'address1' => 'address_1',
+				'address2' => 'address_2', 'city' => 'city', 'zip' => 'zip', 'state' => 'state', 'country' => 'country',
+			];
+			foreach ($m as $field => $meta_key) {
+				$val = get_user_meta($vendor_id, $meta_key, true);
+				if ($val && empty($out[$field])) $out[$field] = $val;
+			}
+		}
+
 		$user = $vendor_id ? get_userdata($vendor_id) : wp_get_current_user();
 		if ($user && !($user instanceof WP_Error)) {
 			if (empty($out['storeName'])) $out['storeName'] = get_user_meta($vendor_id ? $vendor_id : $user->ID, 'store_name', true) ?: ($user->display_name ? $user->display_name . "'s Store" : 'My Store');
@@ -85,9 +115,29 @@ class DSA_Vendor {
 
 		// Text fields.
 		$strings = ['storeName', 'phone', 'address1', 'address2', 'city', 'zip', 'state', 'country'];
+
+		// Keep WCFM's canonical profile settings in sync — wcfm_get_vendor_store_info()
+		// reads the compound wcfmmp_profile_settings array, so writes MUST land there
+		// too or the values never round-trip in the Seller App UI.
+		$settings = get_user_meta($vendor_id, 'wcfmmp_profile_settings', true);
+		if (!is_array($settings)) $settings = [];
+		if (!isset($settings['address']) || !is_array($settings['address'])) $settings['address'] = [];
+		$settings_map = [
+			'storeName' => 'shop_name', 'phone' => 'phone', 'address1' => 'street_1',
+			'address2' => 'street_2', 'city' => 'city', 'zip' => 'zip',
+			'state' => 'state', 'country' => 'country',
+		];
+
 		foreach ($strings as $key) {
 			if (!isset($data[$key])) continue;
 			$value = sanitize_text_field(wp_unslash($data[$key]));
+			// Sync into WCFM profile settings.
+			if ('storeName' === $key) {
+				$settings['shop_name'] = $value;
+				$settings['store_name'] = $value;
+			} else {
+				$settings[$settings_map[$key]] = $value;
+			}
 			switch ($key) {
 				case 'storeName':
 					update_user_meta($vendor_id, 'store_name', $value);
@@ -106,7 +156,9 @@ class DSA_Vendor {
 		}
 		if (isset($data['description'])) {
 			update_user_meta($vendor_id, 'about', wp_kses_post(wp_unslash($data['description'])));
+			$settings['about'] = wp_kses_post(wp_unslash($data['description']));
 		}
+		update_user_meta($vendor_id, 'wcfmmp_profile_settings', $settings);
 		if (isset($data['social']) && is_array($data['social'])) {
 			foreach (['facebook', 'twitter', 'instagram', 'youtube', 'linkedin'] as $net) {
 				if (isset($data['social'][$net])) {
