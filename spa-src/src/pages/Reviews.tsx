@@ -55,7 +55,7 @@ export default function Reviews() {
           <Empty art="⭐" title="No reviews yet" body="Reviews build buyer trust. They'll appear here as customers rate your products." />
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: 18, alignItems: 'start' }}>
           <div className="card card-pad sticky-panel">
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
               <div style={{ fontSize: 40, fontWeight: 800 }}>{avg.toFixed(1)}</div>

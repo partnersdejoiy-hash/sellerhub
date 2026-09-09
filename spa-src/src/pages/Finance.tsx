@@ -24,7 +24,7 @@ export default function Finance() {
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(170px, 100%), 1fr))', gap: 12, marginBottom: 18 }}>
         <Stat label="Revenue · 30 days" value={money(data.revenue30)} />
         <Stat label="Revenue · 90 days" value={money(data.revenue90)} />
         <Stat label="Refunded · 30 days" value={money(data.refund30)} />

@@ -84,7 +84,8 @@ export default function ProductEditor() {
   if (loadErr) return <ErrorBox message={loadErr} />
   if (!draft) return <Loading label="Loading product…" />
 
-  const completion = useMemo(() => {
+  // Plain computation (not a hook) so early returns above never change hook order.
+  const completion = (() => {
     let score = 0
     if (draft.name) score += 20
     if (draft.description) score += 15
@@ -95,7 +96,7 @@ export default function ProductEditor() {
     if (draft.stock || draft.stockStatus === 'outofstock') score += 10
     if (draft.shortDescription) score += 5
     return score
-  }, [draft])
+  })()
 
   return (
     <div>

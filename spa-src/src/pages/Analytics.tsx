@@ -33,7 +33,7 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 12, marginBottom: 18 }}>
         <Stat label="Revenue" value={money(data.summary.revenue)} delta={growth} />
         <Stat label="Orders" value={String(data.summary.orders)} />
         <Stat label="Items sold" value={String(data.summary.itemsSold)} />
@@ -49,7 +49,7 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 18 }}>
         <div className="card">
           <div className="card-head"><h3>🏆 Top performers</h3></div>
           {data.bestSellers.length === 0 ? <Empty art="🏆" title="No sales yet" body="Best sellers are ranked by units sold." /> : (

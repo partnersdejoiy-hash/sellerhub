@@ -82,7 +82,7 @@ export default function Store() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 18 }}>
         <div className="card card-pad">
           <h3 style={{ marginBottom: 14 }}>Brand</h3>
           <div className="field">

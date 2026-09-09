@@ -19,7 +19,7 @@ export default function Settings() {
     <div>
       <div className="page-head"><div><h1>Settings</h1><p>Account, store and app preferences.</p></div></div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: 18, alignItems: 'start' }}>
         <div className="card card-pad sticky-panel" style={{ display: 'grid', gap: 4 }}>
           {TABS.map((t) => (
             <Link key={t.key} to={t.key === 'account' ? '/settings' : '/settings/' + t.key} className={'nav-item' + (active === t.key ? ' active' : '')} style={{ color: active === t.key ? undefined : 'var(--ink-700)' }}>

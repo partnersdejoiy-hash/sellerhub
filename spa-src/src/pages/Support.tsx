@@ -22,7 +22,7 @@ export default function Support() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 18 }}>
         <div className="card">
           <div className="card-head"><h3>📚 Frequently asked</h3></div>
           <div style={{ padding: '8px 16px 16px' }}>

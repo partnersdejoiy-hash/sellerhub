@@ -13,7 +13,7 @@ export default function Marketing() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: 18 }}>
         <div className="card">
           <div className="card-head"><h3>🎯 Coupons & Offers</h3></div>
           <Empty

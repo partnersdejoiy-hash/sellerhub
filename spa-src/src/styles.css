@@ -116,7 +116,7 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
   position: fixed;
   inset: 0 auto 0 0;
-  z-index: 50;
+  z-index: 96; /* above .drawer-overlay (90) so the opened sidebar stays tappable */
   transition: transform var(--med);
 }
 .sidebar-brand {
@@ -200,9 +200,12 @@ a:hover { text-decoration: underline; }
 .hamburger { display: none; }
 
 /* Content */
-.content { flex: 1; padding: 24px; max-width: 1560px; width: 100%; margin: 0 auto; }
+html { scrollbar-gutter: stable; }
+.content { flex: 1; padding: 24px; max-width: 1560px; width: 100%; margin: 0 auto; min-width: 0; }
+.page-anim { animation: page-in 0.22s var(--ease); }
+@keyframes page-in { from { opacity: 0; transform: translateY(6px); } }
 .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
-.page-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.page-head h1 { font-size: clamp(19px, 1.2vw + 14px, 24px); font-weight: 750; letter-spacing: -0.02em; }
 .page-head p { color: var(--ink-500); font-size: 13px; margin-top: 2px; }
 .page-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
@@ -266,7 +269,7 @@ a:hover { text-decoration: underline; }
 .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 18px; }
 
 /* Editor layout: collapsible rail */
-.editor-grid { display: grid; gridTemplate: auto 1fr / 200px 1fr; gap: 18px; align-items: start; grid-template-columns: 200px 1fr; }
+.editor-grid { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 18px; align-items: start; }
 .editor-rail { position: sticky; top: 80px; display: grid; gap: 4px; }
 .editor-rail-close { display: none; }
 .onboard-grid { display: grid; grid-template-columns: minmax(0, 860px); margin: 0 auto; }
@@ -288,8 +291,26 @@ a:hover { text-decoration: underline; }
 .switch input:checked + .track { background: var(--brand-600); }
 .switch input:checked + .track::after { transform: translateX(18px); }
 
+/* Typography helpers */
+h1, h2, h3 { letter-spacing: -0.02em; }
+.card-head h3 { font-size: 15px; }
+.stat .value, .cell-num { font-variant-numeric: tabular-nums; }
+
+/* Focus visibility (keyboard users) */
+.btn:focus-visible, .icon-btn:focus-visible, .pill:focus-visible, .nav-item:focus-visible,
+.palette-item:focus-visible, .mobile-nav a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--brand-500); outline-offset: 2px;
+}
+
+/* List toolbar (Products etc.) */
+.card-head-products { justify-content: space-between; }
+.tools-search { width: 100%; max-width: 280px; }
+
 /* Tables */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (min-width: 1025px) {
+  .table thead th { position: sticky; top: var(--topbar-h); z-index: 5; }
+}
 table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .table th {
   text-align: left; padding: 11px 16px; font-size: 11px; font-weight: 700;
@@ -306,6 +327,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .cell-product .sub { font-size: 11.5px; color: var(--ink-400); }
 .cell-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .row-mobile-label { display: none; }
+.table input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--brand-600); cursor: pointer; }
 
 /* Tabs / pills */
 .pill-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
@@ -453,6 +475,10 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .notif-item strong { font-size: 13px; display: block; }
 .notif-item span { font-size: 12px; color: var(--ink-500); }
 
+/* User menu pop (topbar) */
+.user-pop { min-width: 210px; padding-bottom: 6px; }
+.user-pop .palette-item { padding: 11px 16px; }
+
 /* Progress bar */
 .progress { height: 8px; border-radius: var(--r-full); background: var(--ink-100); overflow: hidden; }
 .progress > div { height: 100%; border-radius: var(--r-full); background: linear-gradient(90deg, var(--brand-500), var(--brand-700)); transition: width var(--med); }
@@ -479,6 +505,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .form-grid, .form-grid-3 { grid-template-columns: 1fr; gap: 0; }
   .stat .value { font-size: 20px; }
   .topbar-search kbd { display: none; }
+  .tools-search { order: -1; max-width: none; }
+  .card-head-products { flex-direction: column; align-items: stretch; }
   .page-head { flex-direction: column; align-items: stretch; }
   .page-actions { justify-content: flex-start; }
   .notif-pop { position: fixed; top: auto; left: 8px; right: 8px; width: auto; }
@@ -499,6 +527,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
     margin-right: 14px; flex-shrink: 0;
   }
   .table td.cell-product::before { display: none; }
+  /* Fixed-width inputs (variation editor) wrap below their label instead of overflowing */
+  .table td input { max-width: 38vw; }
   .card-pad { padding: 14px 12px; }
   .overlay { padding: 8vh 8px 8px; }
   .palette-item { padding: 12px 12px; }
@@ -506,6 +536,17 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .toast { bottom: calc(var(--mobile-nav-h) + 10px); }
   .stat .value { font-size: 18px; }
   .btn { padding: 9px 13px; }
+  .btn-sm { min-height: 34px; }
+  .table td .input { min-height: 36px; }
+  /* Never let long cell content force the page wide: wrap instead */
+  .table td { flex-wrap: wrap; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+  .cell-product { min-width: 0 !important; }
+  .cell-product .name { overflow-wrap: anywhere; }
+  .table td .input { width: auto !important; max-width: 130px; }
+  .table-wrap { max-width: 100%; }
+  /* row actions: right-aligned separator row instead of a floating overlap */
+  .table tbody tr { position: relative; }
+  .table tbody tr td[data-label=""] { justify-content: flex-end; margin-top: 8px; padding-top: 10px; border-top: 1px dashed var(--ink-100); }
 }
 @media (max-width: 380px) {
   .content { padding: 10px 8px calc(var(--mobile-nav-h) + 16px); }
@@ -525,8 +566,13 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 
 /* 4K / ultrawide */
 @media (min-width: 1920px) {
-  .content { max-width: 1720px; }
+  .content { max-width: 1720px; padding: 28px 32px; }
   body { font-size: 14.5px; }
+}
+@media (min-width: 2560px) {
+  .content { max-width: 1780px; padding: 36px 48px; }
+  .card-pad { padding: 24px; }
+  .table td { padding: 14px 18px; }
 }
 
 /* Landscape phones: keep mobile nav, shrink paddings */

@@ -71,6 +71,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
+  const [userOpen, setUserOpen] = useState(false)
   const toast = useToast()
   const navigate = useNavigate()
   const location = useLocation()
@@ -94,7 +95,7 @@ export default function App() {
         e.preventDefault()
         setPaletteOpen((v) => !v)
       }
-      if (e.key === 'Escape') { setPaletteOpen(false); setNotifOpen(false) }
+      if (e.key === 'Escape') { setPaletteOpen(false); setNotifOpen(false); setUserOpen(false); setSidebarOpen(false) }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -115,7 +116,7 @@ export default function App() {
   return (
     <div className="shell">
       {/* Sidebar (desktop) */}
-      <aside className={'sidebar' + (sidebarOpen ? ' open' : '')}>
+      <aside className={'sidebar' + (sidebarOpen ? ' open' : '')} aria-label="Main navigation">
         <div className="sidebar-brand">
           <div className="brand-gem">D</div>
           <div>
@@ -149,7 +150,7 @@ export default function App() {
           )}
         </div>
       </aside>
-      {sidebarOpen && <div className="drawer-overlay" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && <div className="drawer-overlay" onClick={() => setSidebarOpen(false)} aria-hidden="true" />}
 
       <div className="main">
         {/* Topbar */}
@@ -183,13 +184,35 @@ export default function App() {
                 </div>
               )}
             </div>
-            <Link to="/settings" className="topbar-user" title="Account">
-              {me ? <img src={me.user.avatar} alt="" /> : <span style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--ink-100)' }} />}
-            </Link>
+            <div style={{ position: 'relative' }}>
+              <button className="icon-btn" aria-label="Account menu" aria-expanded={userOpen} onClick={() => setUserOpen((v) => !v)}>
+                {me ? <img src={me.user.avatar} alt="" style={{ width: 30, height: 30, borderRadius: '50%' }} /> : '👤'}
+              </button>
+              {userOpen && (
+                <div className="notif-pop user-pop">
+                  {me && (
+                    <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--ink-100)' }}>
+                      <strong style={{ fontSize: 13.5, display: 'block' }}>{me.user.name}</strong>
+                      <span style={{ fontSize: 12, color: 'var(--ink-400)' }}>{me.isAdmin ? 'Administrator' : 'Seller'}</span>
+                    </div>
+                  )}
+                  <button className="palette-item" onClick={() => { setUserOpen(false); window.open(cfg.home + '', '_blank', 'noopener') }}>
+                    <span className="ico">🏪</span>View Storefront
+                  </button>
+                  <button className="palette-item" onClick={() => { setUserOpen(false); navigate('/settings') }}>
+                    <span className="ico">⚙️</span>Settings
+                  </button>
+                  <button className="palette-item" onClick={() => { window.location.href = '/wp-login.php?action=logout' }}>
+                    <span className="ico">↩</span>Log Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
         <main className="content">
+          <div className="page-anim" key={location.pathname}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/analytics" element={<Analytics />} />
@@ -212,11 +235,12 @@ export default function App() {
             <Route path="/more" element={<More />} />
             <Route path="*" element={<Empty art="🧭" title="Page not found" body="This route does not exist in the Seller App." />} />
           </Routes>
+          </div>
         </main>
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="mobile-nav">
+      <nav className="mobile-nav" aria-label="Primary">
         {MOBILE_NAV.map((m) => (
           <NavLink key={m.to} to={m.to} className={({ isActive }) => (isActive ? 'active' : '')} end={m.to === '/'}>
             <span className="m-ico">{m.ico}</span>
@@ -315,7 +339,7 @@ function More() {
   return (
     <div>
       <div className="page-head"><h1>All Modules</h1></div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(150px, 100%), 1fr))', gap: 12 }}>
         {NAV.flatMap((s) => s.items).map((i) => (
           <Link key={i.to} to={i.to} className="card card-pad" style={{ display: 'flex', gap: 12, alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
             <span style={{ fontSize: 22 }}>{i.ico}</span>

@@ -36,7 +36,7 @@ export default function Dashboard() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 12, marginBottom: 18 }}>
         <Stat label="Revenue" value={money(data.summary.revenue)} delta={growth} />
         <Stat label="Orders" value={String(data.summary.orders)} />
         <Stat label="Items Sold" value={String(data.summary.itemsSold)} />
@@ -75,7 +75,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 18 }}>
         {/* Best sellers */}
         <div className="card">
           <div className="card-head"><h3>🏆 Best Sellers</h3><Link to="/products" className="hint">View products →</Link></div>
