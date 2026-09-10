@@ -83,6 +83,42 @@ if (isset($_GET['action']) && $_GET['action'] === 'stock_update') {
     exit;
 }
 
+if (isset($_GET['action']) && $_GET['action'] === 'price_update') {
+    header('Content-Type: application/json');
+    $product_id = intval($_POST['product_id'] ?? 0);
+    $price = floatval($_POST['price'] ?? 0);
+
+    $product = wc_get_product($product_id);
+    if ($product && $price >= 0) {
+        $product->set_regular_price($price);
+        $product->set_price($product->get_sale_price() ?: $price);
+        $product->save();
+        echo json_encode(['success' => true, 'price' => $price]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Product not found or invalid price']);
+    }
+    exit;
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'toggle_repricer') {
+    header('Content-Type: application/json');
+    $product_id = intval($_POST['product_id'] ?? 0);
+    $active = intval($_POST['active'] ?? 0);
+    $min_price = floatval($_POST['min_price'] ?? 0);
+    $max_price = floatval($_POST['max_price'] ?? 0);
+
+    $product = wc_get_product($product_id);
+    if ($product) {
+        update_post_meta($product_id, '_dejoiy_repricer_active', $active ? 'yes' : 'no');
+        if ($min_price > 0) update_post_meta($product_id, '_dejoiy_repricer_min', $min_price);
+        if ($max_price > 0) update_post_meta($product_id, '_dejoiy_repricer_max', $max_price);
+        echo json_encode(['success' => true, 'active' => $active]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Product not found']);
+    }
+    exit;
+}
+
 // Render the seller hub
 $user_id = get_current_user_id();
 $store = DSO_Auth::get_vendor_store($user_id);
@@ -317,9 +353,21 @@ ob_start();
                             <span class="dso-hub-item-icon">➕</span>
                             <span>Add New Product (DPIN)</span>
                         </a>
-                        <a href="?section=orders" class="dso-hub-item">
+                        <a href="?section=catalog-upload" class="dso-hub-item">
+                            <span class="dso-hub-item-icon">📁</span>
+                            <span>Bulk Catalog CSV Upload</span>
+                        </a>
+                        <a href="?section=inventory" class="dso-hub-item">
                             <span class="dso-hub-item-icon">📦</span>
-                            <span>Orders & Fulfillment</span>
+                            <span>Manage All Inventory</span>
+                        </a>
+                        <a href="?section=automate-pricing" class="dso-hub-item">
+                            <span class="dso-hub-item-icon">⚡</span>
+                            <span>Automate Pricing (Buy Box)</span>
+                        </a>
+                        <a href="?section=orders" class="dso-hub-item">
+                            <span class="dso-hub-item-icon">🚚</span>
+                            <span>Orders & Dispatches</span>
                         </a>
                         <a href="?section=finance" class="dso-hub-item">
                             <span class="dso-hub-item-icon">💳</span>
@@ -431,7 +479,10 @@ ob_start();
                     <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:12px;letter-spacing:0.5px;">Quick Navigation Shortcuts</div>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:10px;">
                         <a href="?section=add-product" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">➕ Add New Product</a>
-                        <a href="?section=orders" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">📦 Orders Action Center</a>
+                        <a href="?section=catalog-upload" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">📁 Bulk CSV Upload</a>
+                        <a href="?section=inventory" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">📦 Manage Inventory</a>
+                        <a href="?section=automate-pricing" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">⚡ Automate Pricing</a>
+                        <a href="?section=orders" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">🚚 Orders & Dispatches</a>
                         <a href="?section=reports" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">📈 Sales Analytics</a>
                         <a href="?section=pricing" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">🏷️ Deals & Coupons</a>
                         <a href="?section=b2b" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#f8fafc;color:#1e293b;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #e2e8f0;">🏢 B2B Wholesale Hub</a>
