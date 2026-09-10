@@ -275,12 +275,17 @@ ob_start();
                     <svg class="dso-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     <input type="text" id="dso-header-search-input" class="dso-header-search-input" placeholder="Search products, DPIN, orders, tools..." autocomplete="off" spellcheck="false" aria-label="Search DEJOIY Seller Hub" />
                     <button type="button" id="dso-search-clear-btn" class="dso-search-clear-btn" style="display:none;" aria-label="Clear search">&times;</button>
+                    <button type="button" id="dso-mobile-search-close" class="dso-mobile-search-close" aria-label="Close search">&times;</button>
                     <kbd class="dso-search-kbd">⌘K</kbd>
                 </div>
                 <div id="dso-header-search-results" class="dso-header-search-results" style="display:none;"></div>
             </div>
         </div>
         <div class="dso-topbar-right">
+            <!-- Mobile Search Icon Trigger Button -->
+            <button type="button" class="dso-topbar-icon-btn dso-mobile-search-trigger" id="dso-mobile-search-trigger" title="Search catalog, orders & tools" aria-label="Search catalog, orders & tools">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
             <!-- Dynamic Logged-in Seller Greeting Pill -->
             <div class="dso-topbar-greeting-pill" title="<?php echo esc_attr($store_name . ' (' . $merchant_code . ')'); ?>">
                 <span class="dso-greeting-wave">👋</span>
@@ -546,11 +551,11 @@ ob_start();
 
         <!-- Professional Enterprise Footer -->
         <footer class="dso-footer">
-            <div class="dso-footer-grid">
+            <div class="dso-footer-grid dso-desktop-footer-grid">
                 <div class="dso-footer-brand-col">
                     <div class="dso-footer-logo-row">
                         <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-footer-logo" style="filter:brightness(0) invert(1);" />
-                        <span class="dso-footer-badge">SELLER OS v2.4</span>
+                        <span class="dso-footer-badge">SELLER OS v4.2</span>
                     </div>
                     <p class="dso-footer-desc">
                         DEJOIY Marketplace Seller Operating System. Powering high-growth commerce, DPIN cataloging, and nationwide fulfillment.
@@ -564,14 +569,14 @@ ob_start();
                     <h4>Seller Central</h4>
                     <a href="?section=dashboard">Overview</a>
                     <a href="?section=products">Product Catalog (DPIN)</a>
+                    <a href="?section=inventory">Manage All Inventory</a>
                     <a href="?section=orders">Order Fulfillment</a>
-                    <a href="?section=pricing">Smart Pricing</a>
-                    <a href="?section=advertising">DEJOIY Ads</a>
+                    <a href="?section=automate-pricing">Automate Pricing</a>
                 </div>
                 <div class="dso-footer-col">
                     <h4>Treasury & Growth</h4>
                     <a href="?section=finance">Settlements & Payouts</a>
-                    <a href="?section=withdrawals">Instant Withdrawals</a>
+                    <a href="?section=coupons-deals">Coupons & Deals</a>
                     <a href="?section=performance">Account Health SLA</a>
                     <a href="?section=growth">Growth Advisor</a>
                     <a href="?section=store">Storefront Studio</a>
@@ -585,7 +590,33 @@ ob_start();
                     <span class="dso-footer-support-phone">📞 1800-DEJOIY-HUB</span>
                 </div>
             </div>
-            <div class="dso-footer-bottom">
+
+            <!-- Native App Mobile Footer (<= 768px) -->
+            <div class="dso-mobile-app-footer">
+                <div class="dso-mobile-footer-brand-row">
+                    <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-mobile-footer-logo" style="filter:brightness(0) invert(1);" />
+                    <span class="dso-mobile-footer-badge">SELLER APP v4.2</span>
+                </div>
+                <p class="dso-mobile-footer-desc">DEJOIY Marketplace Seller Central Operating System.</p>
+                <div class="dso-mobile-footer-pill-links">
+                    <a href="tel:1800-DEJOIY-HUB" class="dso-mobile-footer-pill">📞 1800-DEJOIY</a>
+                    <a href="?section=support" class="dso-mobile-footer-pill">🎫 Support</a>
+                    <a href="?section=learn" class="dso-mobile-footer-pill">🎓 Guides</a>
+                    <a href="<?php echo esc_url($live_store_url); ?>" target="_blank" rel="noopener" class="dso-mobile-footer-pill">🌐 Storefront ↗</a>
+                </div>
+                <div class="dso-mobile-footer-badges">
+                    <span>DPIN™ Protected</span>
+                    <span>•</span>
+                    <span>RBI-Compliant</span>
+                    <span>•</span>
+                    <span>AES-256</span>
+                </div>
+                <div class="dso-mobile-footer-copyright">
+                    © 2026 DEJOIY Marketplace Pvt. Ltd. All rights reserved.
+                </div>
+            </div>
+
+            <div class="dso-footer-bottom dso-desktop-only">
                 <div>© 2026 DEJOIY Marketplace Private Limited. All rights reserved.</div>
                 <div class="dso-footer-tags">
                     <span>DPIN™ Protected</span>
@@ -598,28 +629,38 @@ ob_start();
         </footer>
     </main>
 
-    <!-- Mobile Bottom Nav -->
-    <nav class="dso-bottom-nav" id="dso-bottom-nav">
+    <!-- Mobile Native Bottom Nav -->
+    <nav class="dso-bottom-nav" id="dso-bottom-nav" aria-label="Mobile Navigation Bar">
         <a href="?section=dashboard" class="dso-bottom-nav-item <?php echo $current_section === 'dashboard' ? 'dso-bottom-active' : '' ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <div class="dso-bottom-nav-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            </div>
             <span>Home</span>
         </a>
-        <a href="?section=orders" class="dso-bottom-nav-item <?php echo $current_section === 'orders' ? 'dso-bottom-active' : '' ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        <a href="?section=orders" class="dso-bottom-nav-item <?php echo in_array($current_section, ['orders', 'order-detail']) ? 'dso-bottom-active' : '' ?>">
+            <div class="dso-bottom-nav-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+            </div>
             <span>Orders</span>
         </a>
-        <a href="?section=products" class="dso-bottom-nav-item <?php echo $current_section === 'products' ? 'dso-bottom-active' : '' ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
-            <span>Products</span>
+        <a href="?section=inventory" class="dso-bottom-nav-item <?php echo in_array($current_section, ['inventory', 'products', 'add-product', 'edit-product', 'catalog-upload']) ? 'dso-bottom-active' : '' ?>">
+            <div class="dso-bottom-nav-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <span>Inventory</span>
         </a>
-        <a href="?section=reports" class="dso-bottom-nav-item <?php echo $current_section === 'reports' ? 'dso-bottom-active' : '' ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-            <span>Reports</span>
+        <a href="?section=automate-pricing" class="dso-bottom-nav-item <?php echo in_array($current_section, ['automate-pricing', 'pricing', 'coupons-deals']) ? 'dso-bottom-active' : '' ?>">
+            <div class="dso-bottom-nav-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <span>Pricing</span>
         </a>
-        <a href="?section=finance" class="dso-bottom-nav-item <?php echo $current_section === 'finance' ? 'dso-bottom-active' : '' ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <span>Finance</span>
-        </a>
+        <button type="button" class="dso-bottom-nav-item" id="dso-bottom-menu-btn" aria-label="Open Navigation Drawer">
+            <div class="dso-bottom-nav-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </div>
+            <span>Menu</span>
+        </button>
     </nav>
 </div>
 
@@ -669,8 +710,42 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleSidebar();
         });
     }
+    var bottomMenuBtn = document.getElementById('dso-bottom-menu-btn');
+    if (bottomMenuBtn) {
+        bottomMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
+        });
+    }
     if (overlay) overlay.addEventListener('click', closeSidebar);
     if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+
+    // Mobile App Topbar Live Search Toggle
+    var topbarEl = document.querySelector('.dso-topbar');
+    var mobileSearchTrigger = document.getElementById('dso-mobile-search-trigger');
+    var mobileSearchClose = document.getElementById('dso-mobile-search-close');
+
+    if (mobileSearchTrigger && topbarEl) {
+        mobileSearchTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            topbarEl.classList.add('dso-mobile-search-active');
+            var inp = document.getElementById('dso-header-search-input');
+            if (inp) inp.focus();
+        });
+    }
+    if (mobileSearchClose && topbarEl) {
+        mobileSearchClose.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            topbarEl.classList.remove('dso-mobile-search-active');
+            var inp = document.getElementById('dso-header-search-input');
+            if (inp) inp.value = '';
+            var res = document.getElementById('dso-header-search-results');
+            if (res) res.style.display = 'none';
+        });
+    }
 
     // Auto-close sidebar on mobile when navigating
     document.querySelectorAll('.dso-nav-link, .dso-nav-child').forEach(function(link) {
@@ -899,12 +974,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (headerSearchResults && !headerSearchResults.contains(e.target) && (!headerSearchInput || !headerSearchInput.contains(e.target))) {
             headerSearchResults.style.display = 'none';
         }
-        if (settingsMenu && !settingsMenu.contains(e.target) && (!settingsToggle || !settingsToggle.contains(e.target))) {
-            settingsMenu.classList.remove('dso-dropdown-open');
-        }
-        if (helpMenu && !helpMenu.contains(e.target) && (!helpToggle || !helpToggle.contains(e.target))) {
-            helpMenu.classList.remove('dso-dropdown-open');
-        }
     });
 
     // Command palette & keyboard shortcuts
@@ -919,8 +988,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape') {
             if (headerSearchResults) headerSearchResults.style.display = 'none';
             if (quickHubMenu) quickHubMenu.classList.remove('dso-open');
-            if (settingsMenu) settingsMenu.classList.remove('dso-dropdown-open');
-            if (helpMenu) helpMenu.classList.remove('dso-dropdown-open');
+            if (topbarEl) topbarEl.classList.remove('dso-mobile-search-active');
             if (typeof DSO !== 'undefined' && DSO.toggleAiDrawer) DSO.toggleAiDrawer(false);
         }
     });
