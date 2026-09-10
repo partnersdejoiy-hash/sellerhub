@@ -36,3 +36,4 @@ public_html/wp-signup.php
 public_html/wp-trackback.php
 public_html/xmlrpc.php
 *.bak
+*.tsbuildinfo
