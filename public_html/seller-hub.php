@@ -294,10 +294,10 @@ ob_start();
                         </div>
                     </div>
                     <div class="dso-hub-content-list">
-                        <a href="<?php echo esc_url($live_store_url); ?>" target="_blank" rel="noopener" class="dso-hub-item" style="color:#7c3aed;font-weight:700;">
+                        <a href="<?php echo esc_url($live_store_url); ?>" target="_blank" rel="noopener" class="dso-hub-item" style="color:#0066ff;font-weight:700;">
                             <span class="dso-hub-item-icon">🌐</span>
                             <span>Visit Live Storefront</span>
-                            <span class="dso-hub-badge-pill" style="background:#ede9fe;color:#7c3aed;">↗</span>
+                            <span class="dso-hub-badge-pill" style="background:#e0edff;color:#0066ff;">↗</span>
                         </a>
                         <button type="button" class="dso-hub-item" id="dso-hub-trigger-ai">
                             <span class="dso-hub-item-icon">✨</span>
@@ -449,7 +449,7 @@ ob_start();
                 <span style="font-size:22px;">✨</span>
                 <div>
                     <strong style="display:block;font-size:15px;color:#fff;">DEJOIY Seller AI</strong>
-                    <small style="color:#a78bfa;font-size:11px;">Instant Growth & Listing Copilot</small>
+                    <small style="color:#38bdf8;font-size:11px;">Instant Growth & Listing Copilot</small>
                 </div>
             </div>
             <button id="dso-ai-close-btn" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:6px;display:flex;" aria-label="Close Seller AI">
@@ -699,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerSearchResults.innerHTML = 
                 '<div class="dso-search-empty">' +
                     '🔍 No results found for "<strong>' + escapeHtml(q) + '</strong>"<br>' +
-                    '<a href="?section=products&search=' + encodeURIComponent(q) + '" style="display:inline-block;margin-top:8px;color:#7c3aed;font-weight:600;text-decoration:underline;">Search full catalog &rarr;</a>' +
+                    '<a href="?section=products&search=' + encodeURIComponent(q) + '" style="display:inline-block;margin-top:8px;color:#0066ff;font-weight:600;text-decoration:underline;">Search full catalog &rarr;</a>' +
                 '</div>';
             headerSearchResults.style.display = 'block';
             currentHighlightIndex = -1;
@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
         html += 
             '<div style="padding:8px 16px;border-top:1px solid #f1f5f9;background:#f8fafc;font-size:12px;display:flex;align-items:center;justify-content:space-between;">' +
                 '<span style="color:#64748b;">Press <kbd style="background:#e2e8f0;padding:1px 5px;border-radius:3px;font-family:monospace;">Enter</kbd> to search catalog</span>' +
-                '<a href="?section=products&search=' + encodeURIComponent(q) + '" style="color:#7c3aed;font-weight:600;text-decoration:none;">View all results &rarr;</a>' +
+                '<a href="?section=products&search=' + encodeURIComponent(q) + '" style="color:#0066ff;font-weight:600;text-decoration:none;">View all results &rarr;</a>' +
             '</div>';
 
         headerSearchResults.innerHTML = html;
@@ -905,13 +905,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!conv) return;
 
             var userMsg = document.createElement('div');
-            userMsg.style.cssText = 'background:#7c3aed;color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;align-self:flex-end;max-width:85%;line-height:1.4;';
+            userMsg.style.cssText = 'background:linear-gradient(135deg, #0066ff 0%, #d9006c 100%);color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;align-self:flex-end;max-width:85%;line-height:1.4;';
             userMsg.textContent = prompt;
             conv.appendChild(userMsg);
 
             var botMsg = document.createElement('div');
             botMsg.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;padding:12px 14px;border-radius:12px 12px 12px 2px;font-size:13px;line-height:1.5;max-width:90%;';
-            botMsg.innerHTML = '<span style="color:#7c3aed;font-weight:700;">DEJOIY AI:</span> Analyzing real-time catalog & sales telemetry...<br><br>💡 <strong>Insight:</strong> 12 listings can gain up to +18% CTR by adding bullet points and high-res gallery images. Consider enrolling in upcoming Mega Deals.';
+            botMsg.innerHTML = '<span style="color:#0066ff;font-weight:700;">DEJOIY AI:</span> Analyzing real-time catalog & sales telemetry...<br><br>💡 <strong>Insight:</strong> 12 listings can gain up to +18% CTR by adding bullet points and high-res gallery images. Consider enrolling in upcoming Mega Deals.';
             conv.appendChild(botMsg);
 
             if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
@@ -930,13 +930,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!conv) return;
 
             var userMsg = document.createElement('div');
-            userMsg.style.cssText = 'background:#7c3aed;color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;align-self:flex-end;max-width:85%;line-height:1.4;';
+            userMsg.style.cssText = 'background:linear-gradient(135deg, #0066ff 0%, #d9006c 100%);color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;align-self:flex-end;max-width:85%;line-height:1.4;';
             userMsg.textContent = val;
             conv.appendChild(userMsg);
 
             var botMsg = document.createElement('div');
             botMsg.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;padding:12px 14px;border-radius:12px 12px 12px 2px;font-size:13px;line-height:1.5;max-width:90%;';
-            botMsg.innerHTML = '<span style="color:#7c3aed;font-weight:700;">DEJOIY AI:</span> Understood! Analyzing your store data regarding "' + val.replace(/</g, '&lt;') + '"... Everything is in good standing with 94/100 Health Score.';
+            botMsg.innerHTML = '<span style="color:#0066ff;font-weight:700;">DEJOIY AI:</span> Understood! Analyzing your store data regarding "' + val.replace(/</g, '&lt;') + '"... Everything is in good standing with 94/100 Health Score.';
             conv.appendChild(botMsg);
 
             if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
@@ -979,7 +979,7 @@ function show_login_form($error = '') {
                 align-items: center;
                 justify-content: center;
                 min-height: 100vh;
-                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);
+                background: linear-gradient(135deg, #000c2c 0%, #001553 50%, #031c5c 100%);
                 padding: 24px;
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                 color: #1e293b;
@@ -987,7 +987,7 @@ function show_login_form($error = '') {
             .login-card {
                 background: #ffffff;
                 border-radius: 20px;
-                box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.4);
+                box-shadow: 0 25px 50px -12px rgba(0, 12, 44, 0.45);
                 padding: 44px 36px;
                 width: 100%;
                 max-width: 440px;
@@ -1006,15 +1006,15 @@ function show_login_form($error = '') {
             }
             .login-badge {
                 display: inline-block;
-                background: rgba(124, 58, 237, 0.1);
-                color: #7c3aed;
+                background: rgba(0, 102, 255, 0.1);
+                color: #0066ff;
                 font-size: 11px;
                 font-weight: 800;
                 letter-spacing: 1px;
                 padding: 4px 10px;
                 border-radius: 6px;
                 margin-bottom: 12px;
-                border: 1px solid rgba(124, 58, 237, 0.2);
+                border: 1px solid rgba(0, 102, 255, 0.25);
             }
             .login-card h1 {
                 font-size: 24px;
@@ -1063,15 +1063,15 @@ function show_login_form($error = '') {
             }
             .login-card .dso-input:focus {
                 outline: none;
-                border-color: #7c3aed;
+                border-color: #0066ff;
                 background: #ffffff;
-                box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+                box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.15);
             }
             .login-card .dso-btn {
                 display: block;
                 width: 100%;
                 padding: 14px 20px;
-                background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+                background: linear-gradient(135deg, #0066ff 0%, #d9006c 100%);
                 color: #fff;
                 border: none;
                 border-radius: 12px;
@@ -1084,7 +1084,7 @@ function show_login_form($error = '') {
             }
             .login-card .dso-btn:hover {
                 transform: translateY(-1px);
-                box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+                box-shadow: 0 8px 20px rgba(0, 102, 255, 0.35);
             }
             .login-card .dso-btn:active {
                 transform: translateY(0);
@@ -1098,7 +1098,7 @@ function show_login_form($error = '') {
                 color: #64748b;
             }
             .login-footer a {
-                color: #7c3aed;
+                color: #0066ff;
                 text-decoration: none;
                 font-weight: 600;
             }
@@ -1133,7 +1133,7 @@ function show_login_form($error = '') {
                 <div class="dso-form-group">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                         <label for="pwd" style="margin-bottom:0;">Password</label>
-                        <a href="https://dejoiy.com/my-account/lost-password/" target="_blank" style="font-size:12px;color:#7c3aed;text-decoration:none;font-weight:500;">Forgot?</a>
+                        <a href="https://dejoiy.com/my-account/lost-password/" target="_blank" style="font-size:12px;color:#0066ff;text-decoration:none;font-weight:500;">Forgot?</a>
                     </div>
                     <input type="password" id="pwd" name="pwd" class="dso-input" placeholder="••••••••••••" required />
                 </div>
