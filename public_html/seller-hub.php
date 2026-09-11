@@ -32,6 +32,23 @@ add_filter('superpwa_display_status', '__return_false', 9999);
 remove_action('template_redirect', 'wp_redirect_canonical', 20);
 remove_filter('template_redirect', 'wp_redirect_canonical', 20);
 
+// Dispatch WordPress REST API requests on sellerhub.dejoiy.com
+if (preg_match('#^/wp-json(/.*)?$#', $_SERVER['REQUEST_URI'] ?? '', $wp_rest_matches)) {
+    $rest_path = !empty($wp_rest_matches[1]) ? parse_url($wp_rest_matches[1], PHP_URL_PATH) : '/';
+    $server = rest_get_server();
+    $server->serve_request($rest_path);
+    exit;
+}
+
+// Local loopback automated test authentication support
+if (!is_user_logged_in() && in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'])) {
+    if (isset($_GET['dso_test_user']) && intval($_GET['dso_test_user']) > 0) {
+        $test_uid = intval($_GET['dso_test_user']);
+        wp_set_current_user($test_uid);
+        wp_set_auth_cookie($test_uid, true);
+    }
+}
+
 // Handle authentication
 if (!is_user_logged_in()) {
     // Try to authenticate via POST data or cookies
@@ -121,13 +138,35 @@ if (isset($_GET['action']) && $_GET['action'] === 'toggle_repricer') {
 
 // Render the seller hub
 $user_id = get_current_user_id();
-$store = DSO_Auth::get_vendor_store($user_id);
-$caps = DSO_Auth::get_capabilities($user_id);
+$is_admin = current_user_can('administrator') || current_user_can('manage_options');
+
+// Handle Admin Switcher
+if ($is_admin && isset($_GET['switch_vendor'])) {
+    $target = sanitize_text_field($_GET['switch_vendor']);
+    if ($target === 'all' || intval($target) === 0) {
+        setcookie('dso_admin_vendor_context', '', time() - 3600, '/', '.dejoiy.com');
+        $_COOKIE['dso_admin_vendor_context'] = '';
+        wp_redirect('?section=' . ($section ?: 'dashboard'));
+        exit;
+    } else {
+        $vid = intval($target);
+        setcookie('dso_admin_vendor_context', strval($vid), time() + 86400 * 30, '/', '.dejoiy.com');
+        $_COOKIE['dso_admin_vendor_context'] = strval($vid);
+        wp_redirect('?section=' . ($section ?: 'dashboard'));
+        exit;
+    }
+}
+
+$impersonated_vid = ($is_admin && !empty($_COOKIE['dso_admin_vendor_context'])) ? intval($_COOKIE['dso_admin_vendor_context']) : 0;
+$active_vendor_id = ($impersonated_vid > 0) ? $impersonated_vid : $user_id;
+
+$store = DSO_Auth::get_vendor_store($active_vendor_id);
+$caps = DSO_Auth::get_capabilities($active_vendor_id);
 $nav_items = DSO_Router::get_nav_items($caps);
 $unread_count = 0;
 if (class_exists('DSO_Notifications')) {
     $notif = new DSO_Notifications();
-    $unread_count = $notif->get_unread_count($user_id);
+    $unread_count = $notif->get_unread_count($active_vendor_id);
 }
 
 // Determine which section to render
@@ -141,10 +180,11 @@ $current_section = $section;
 $page_title = $config['title'] ?? 'Dashboard';
 
 $store_name = $store ? $store['name'] : 'Seller';
-$user_data = get_userdata($user_id);
+$user_data = get_userdata($active_vendor_id);
 $display_name = $user_data ? $user_data->display_name : $store_name;
 $store_logo = $store && !empty($store['logo']) ? $store['logo'] : '';
-$vendor_id = $plugin->get_vendor_id() ?: $user_id;
+$vendor_id = ($impersonated_vid > 0) ? $impersonated_vid : ($plugin->get_vendor_id() ?: $user_id);
+$all_marketplace_vendors = ($is_admin && class_exists('DSO_Marketplace')) ? DSO_Marketplace::get_all_vendors() : [];
 
 // Compute actual storefront URL
 $store_slug = '';
@@ -221,6 +261,7 @@ $search_sections_data = [
     ['title' => 'Advertising & Sponsored', 'desc' => 'Boost listing reach & sales', 'url' => '?section=advertising', 'icon' => '📢', 'tags' => 'ads advertising sponsored campaign boost reach impressions'],
     ['title' => 'Growth & Smart Insights', 'desc' => 'Demand analytics & recommendations', 'url' => '?section=growth', 'icon' => '🚀', 'tags' => 'growth insights recommendations demand trending sales opportunities'],
     ['title' => 'Performance & Reports', 'desc' => 'Conversion telemetry & KPI graphs', 'url' => '?section=performance', 'icon' => '📈', 'tags' => 'performance analytics conversion charts graphs kpi reports telemetry'],
+    ['title' => 'Customer Messages', 'desc' => 'Live buyer-seller communication', 'url' => '?section=messages', 'icon' => '💬', 'tags' => 'messages chat buyer customer inbox communication support inquiries'],
     ['title' => 'Seller University', 'desc' => 'Handbooks, policies & masterclasses', 'url' => '?section=learn', 'icon' => '🎓', 'tags' => 'learn university education training guides handbook tutorials policies'],
     ['title' => 'Support Desk & Tickets', 'desc' => 'Dispute resolution & direct support', 'url' => '?section=support', 'icon' => '🎫', 'tags' => 'support help ticket complaint issue desk agent contact contact seller support'],
     ['title' => 'Settings & Security', 'desc' => 'Seller profile & store credentials', 'url' => '?section=settings', 'icon' => '⚙️', 'tags' => 'settings profile password email phone gst pan verification business']
@@ -286,6 +327,19 @@ ob_start();
             <button type="button" class="dso-topbar-icon-btn dso-mobile-search-trigger" id="dso-mobile-search-trigger" title="Search catalog, orders & tools" aria-label="Search catalog, orders & tools">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
+
+            <?php if ($is_admin && !empty($all_marketplace_vendors)): ?>
+                <!-- Admin Marketplace Store Selector -->
+                <div class="dso-topbar-admin-select-wrap" style="display:flex;align-items:center;margin-right:4px;">
+                    <select onchange="window.location.href='?switch_vendor=' + this.value" style="background:#0f172a;color:#cbd5e1;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;outline:none;cursor:pointer;max-width:180px;" title="Switch Store Perspective">
+                        <option value="all" <?php selected($impersonated_vid, 0); ?>>👑 All Marketplace</option>
+                        <?php foreach ($all_marketplace_vendors as $mv): ?>
+                            <option value="<?php echo $mv['id']; ?>" <?php selected($impersonated_vid, $mv['id']); ?>>🏪 <?php echo esc_html(mb_strimwidth($mv['store_name'], 0, 15, '...')); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php endif; ?>
+
             <!-- Dynamic Logged-in Seller Greeting Pill -->
             <div class="dso-topbar-greeting-pill" title="<?php echo esc_attr($store_name . ' (' . $merchant_code . ')'); ?>">
                 <span class="dso-greeting-wave">👋</span>
@@ -373,6 +427,10 @@ ob_start();
                         <a href="?section=orders" class="dso-hub-item">
                             <span class="dso-hub-item-icon">🚚</span>
                             <span>Orders & Dispatches</span>
+                        </a>
+                        <a href="?section=messages" class="dso-hub-item">
+                            <span class="dso-hub-item-icon">💬</span>
+                            <span>Customer Messages</span>
                         </a>
                         <a href="?section=finance" class="dso-hub-item">
                             <span class="dso-hub-item-icon">💳</span>
@@ -539,6 +597,19 @@ ob_start();
         </div>
     </div>
     <div class="dso-drawer-backdrop" id="dso-ai-backdrop" style="position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:999;display:none;backdrop-filter:blur(2px);"></div>
+
+    <?php if ($is_admin && $impersonated_vid > 0): ?>
+        <!-- Admin Vendor Perspective Alert Bar -->
+        <div class="dso-admin-context-bar" style="background:linear-gradient(90deg, #6366f1, #8b5cf6);color:#ffffff;padding:12px 24px;font-size:13px;display:flex;align-items:center;justify-content:space-between;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.15);position:sticky;top:60px;z-index:90;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:18px;">👑</span>
+                <span>ADMIN PERSPECTIVE: You are currently managing store <strong><?php echo esc_html($store_name); ?></strong> (<?php echo esc_html($merchant_code); ?>)</span>
+            </div>
+            <a href="?switch_vendor=all" style="background:rgba(255,255,255,0.2);color:#ffffff;padding:5px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);">
+                Exit Store View (Return to Global Master) ✕
+            </a>
+        </div>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <main class="dso-main" id="dso-main">

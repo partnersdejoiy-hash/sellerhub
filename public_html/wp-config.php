@@ -27,6 +27,8 @@ define('NONCE_SALT',        '!MyJVaLt++BV%):9@#/lHp`S}V<4nQKFYyP2yO;$]rk8Gz2iQMY
 $table_prefix = 'wp_';
 
 define('WP_CACHE', false);
+define('COOKIE_DOMAIN', '.dejoiy.com');
+define('COOKIEHASH', '8f9be602ec79f9dd4320c07f75f539e7');
 define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', false);
 define('WP_DEBUG_DISPLAY', false);
