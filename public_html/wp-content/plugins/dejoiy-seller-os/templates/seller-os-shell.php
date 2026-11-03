@@ -116,8 +116,7 @@ window.dsoSearchData = {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
             <a href="?section=dashboard" class="dso-topbar-brand" title="DEJOIY Seller Central">
-                <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-brand-logo-img" />
-                <span class="dso-brand-badge">SELLER HUB</span>
+                <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-dark" />
             </a>
         </div>
         <div class="dso-topbar-center">
@@ -259,8 +258,7 @@ window.dsoSearchData = {
     <aside class="dso-sidebar" id="dso-sidebar">
         <div class="dso-sidebar-header">
             <a href="?section=dashboard" class="dso-sidebar-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-                <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-brand-logo-img" style="height:32px;width:auto;" />
-                <span class="dso-brand-badge">SELLER HUB</span>
+                <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-dark" />
             </a>
             <button class="dso-sidebar-close" id="dso-sidebar-close" aria-label="Close menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -401,7 +399,7 @@ window.dsoSearchData = {
             <div class="dso-footer-grid">
                 <div class="dso-footer-brand-col">
                     <div class="dso-footer-logo-row">
-                        <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-footer-logo" />
+                        <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-footer-logo dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-footer-logo dso-logo-dark" />
                         <span class="dso-footer-badge">SELLER OS v2.4</span>
                     </div>
                     <p class="dso-footer-desc">

@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('DSO_VERSION', '20260925.1');
+define('DSO_VERSION', '20261103.1');
 define('DSO_PATH', plugin_dir_path(__FILE__));
 define('DSO_URL', plugin_dir_url(__FILE__));
 define('DSO_BASE', 'seller-hub');

@@ -351,7 +351,9 @@ ob_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo esc_html($page_title); ?> — DEJOIY Seller Central</title>
-    <link rel="icon" type="image/png" href="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-FAVICON-100x100.png">
+    <link rel="icon" type="image/svg+xml" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon-32.png">
+    <link rel="apple-touch-icon" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/apple-touch-icon.png">
     <script>try{if(localStorage.getItem('dso-theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,7 +361,7 @@ ob_start();
     <link rel="stylesheet" href="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/css/seller-os-20260923.css">
     <link rel="stylesheet" href="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/css/dejoiy-brand.css">
     <link rel="stylesheet" href="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/css/seller-os-impact.css?v=20260926">
-    <link rel="stylesheet" href="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/css/seller-os-hubui.css?v=20260926">
+    <link rel="stylesheet" href="https://<?php echo $host; ?>/wp-content/plugins/dejoiy-seller-os/assets/css/seller-os-hubui.css?v=20261103">
     <?php wp_head(); ?>
     <script>
     var dsoData = {
@@ -386,8 +388,7 @@ ob_start();
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
             <a href="?section=dashboard" class="dso-topbar-brand" title="DEJOIY Seller Central">
-                <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-brand-logo-img" />
-                <span class="dso-brand-badge">SELLER HUB</span>
+                <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-dark" />
             </a>
         </div>
         <div class="dso-topbar-center">
@@ -558,8 +559,7 @@ ob_start();
     <aside class="dso-sidebar" id="dso-sidebar">
         <div class="dso-sidebar-header">
             <a href="?section=dashboard" class="dso-sidebar-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-                <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-brand-logo-img" style="height:32px;width:auto;filter:brightness(0) invert(1);" />
-                <span class="dso-brand-badge">SELLER HUB</span>
+                <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-brand-logo-img dso-logo-dark" />
             </a>
             <button class="dso-sidebar-close" id="dso-sidebar-close" aria-label="Close menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -709,7 +709,7 @@ ob_start();
             <div class="dso-footer-grid dso-desktop-footer-grid">
                 <div class="dso-footer-brand-col">
                     <div class="dso-footer-logo-row">
-                        <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-footer-logo" style="filter:brightness(0) invert(1);" />
+                        <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-footer-logo dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-footer-logo dso-logo-dark" />
                         <span class="dso-footer-badge">SELLER OS v4.2</span>
                     </div>
                     <p class="dso-footer-desc">
@@ -749,7 +749,7 @@ ob_start();
             <!-- Native App Mobile Footer (<= 768px) -->
             <div class="dso-mobile-app-footer">
                 <div class="dso-mobile-footer-brand-row">
-                    <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" class="dso-mobile-footer-logo" style="filter:brightness(0) invert(1);" />
+                    <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub.svg" alt="DEJOIY Seller Hub" class="dso-mobile-footer-logo dso-logo-light" /><img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/d-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub" class="dso-mobile-footer-logo dso-logo-dark" />
                     <span class="dso-mobile-footer-badge">SELLER APP v4.2</span>
                 </div>
                 <p class="dso-mobile-footer-desc">DEJOIY Marketplace Seller Central Operating System.</p>

@@ -118,7 +118,7 @@ export default function App() {
       {/* Sidebar (desktop) */}
       <aside className={'sidebar' + (sidebarOpen ? ' open' : '')} aria-label="Main navigation">
         <div className="sidebar-brand">
-          <img src="/seller-app/dejoiy-mark.png" alt="DEJOIY" className="brand-mark-img" onError={(e) => {
+          <img src="/seller-app/assets/favicon.svg" alt="DEJOIY" className="brand-mark-img" onError={(e) => {
             (e.target as HTMLElement).style.display = 'none'
           }} />
           <div>

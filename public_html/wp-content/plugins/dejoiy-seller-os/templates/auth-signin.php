@@ -22,7 +22,9 @@ if ($current_user->ID > 0 && !is_wp_error($current_user)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — DEJOIY Seller Central</title>
-    <link rel="icon" type="image/png" href="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-FAVICON-100x100.png">
+    <link rel="icon" type="image/svg+xml" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon-32.png">
+    <link rel="apple-touch-icon" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -38,7 +40,7 @@ if ($current_user->ID > 0 && !is_wp_error($current_user)) {
     <div class="dejoiy-auth-left">
         <div class="dejoiy-auth-card">
             <div class="dejoiy-auth-brand">
-                <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY">
+                <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY">
                 <span class="dejoiy-brand-badge" style="font-size: 11px;">SELLER CENTRAL</span>
             </div>
             

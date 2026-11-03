@@ -608,7 +608,9 @@ class DSO_Login {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
             <title><?php echo esc_html($title); ?></title>
-            <link rel="icon" type="image/png" href="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-FAVICON-100x100.png">
+            <link rel="icon" type="image/svg+xml" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon.svg">
+            <link rel="icon" type="image/png" sizes="32x32" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon-32.png">
+            <link rel="apple-touch-icon" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/apple-touch-icon.png">
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
             <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -650,7 +652,7 @@ class DSO_Login {
         $subtitle = $is_seller ? 'Sign in to your DEJOIY Seller account' : 'Sign in to your DEJOIY account';
         $nonce = wp_create_nonce('dso_auth_nonce');
         $ajax_url = '/wp-admin/admin-ajax.php';
-        $logo_url = 'https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png';
+        $logo_url = $is_seller ? 'https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg' : 'https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-wordmark.svg';
 
         $g_settings = get_option('googlesitekit_sign-in-with-google_settings');
         $google_client_id = (is_array($g_settings) && !empty($g_settings['clientID'])) ? $g_settings['clientID'] : '382069039377-04dbrl71c6nvmcrd0pq38msjuhl499th.apps.googleusercontent.com';

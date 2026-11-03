@@ -11,7 +11,9 @@ if (!defined('ABSPATH')) exit;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEJOIY Seller Central — Start Selling Today</title>
-    <link rel="icon" type="image/png" href="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-FAVICON-100x100.png">
+    <link rel="icon" type="image/svg+xml" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon-32.png">
+    <link rel="apple-touch-icon" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -26,7 +28,7 @@ if (!defined('ABSPATH')) exit;
     <!-- Navigation -->
     <nav class="dejoiy-nav">
         <a href="/" class="dejoiy-nav-logo">
-            <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY">
+            <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY Seller Hub">
         </a>
         <div class="dejoiy-nav-links">
             <a href="#features" class="dejoiy-nav-link">Why Sell</a>
@@ -316,7 +318,7 @@ if (!defined('ABSPATH')) exit;
         <div class="dejoiy-footer-content">
             <div class="dejoiy-footer-brand">
                 <div class="dejoiy-footer-logo">
-                    <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY">
+                    <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub-on-dark.svg" alt="DEJOIY Seller Hub">
                 </div>
                 <p class="dejoiy-footer-desc">
                     India's premium marketplace for brands. Sell to millions of customers with powerful tools and fast fulfillment.

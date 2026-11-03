@@ -107,7 +107,7 @@ class DSO_Brands {
                     </div>
                     <div class="dso-card-body">
                         <div class="dso-brand-logo-preview dso-mb-3" style="width: 120px; height: 120px; border-radius: 16px; border: 2px dashed var(--dj-border); display: flex; align-items: center; justify-content: center; background: var(--dj-bg);">
-                            <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" style="max-width: 90%; max-height: 90%;" alt="DEJOIY" />
+                            <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-mark.svg" style="max-width: 90%; max-height: 90%;" alt="DEJOIY" />
                         </div>
                         <p class="dso-text-muted">High-res PNG or SVG with transparent background (min 500x500px).</p>
                         <button type="button" class="dso-btn dso-btn-sm dso-btn-outline">Replace Brand Logo</button>

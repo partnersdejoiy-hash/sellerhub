@@ -11,7 +11,9 @@ if (!defined('ABSPATH')) exit;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Selling — DEJOIY Seller Central</title>
-    <link rel="icon" type="image/png" href="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-FAVICON-100x100.png">
+    <link rel="icon" type="image/svg+xml" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/favicon-32.png">
+    <link rel="apple-touch-icon" href="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -26,7 +28,7 @@ if (!defined('ABSPATH')) exit;
     <!-- Navigation -->
     <nav class="dejoiy-nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 100;">
         <a href="/" class="dejoiy-nav-logo">
-            <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY">
+            <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY">
         </a>
         <div class="dejoiy-nav-actions" style="margin-left: auto;">
             <a href="/wp-login.php" class="dejoiy-btn dejoiy-btn-ghost">Sign In</a>
@@ -37,7 +39,7 @@ if (!defined('ABSPATH')) exit;
         <div class="dejoiy-auth-card" style="max-width: 480px; width: 100%;">
             <div style="text-align: center; margin-bottom: 32px;">
                 <div class="dejoiy-auth-brand" style="justify-content: center;">
-                    <img src="https://sellerhub.dejoiy.com/wp-content/uploads/2026/05/DEJOIY-OFFICIAL-LOGO-e1778929142857.png" alt="DEJOIY" style="height: 48px;">
+                    <img src="https://sellerhub.dejoiy.com/wp-content/plugins/dejoiy-seller-os/assets/brand/dejoiy-seller-hub.svg" alt="DEJOIY" style="height: 48px;">
                     <span class="dejoiy-brand-badge" style="font-size: 11px;">SELLER CENTRAL</span>
                 </div>
             </div>

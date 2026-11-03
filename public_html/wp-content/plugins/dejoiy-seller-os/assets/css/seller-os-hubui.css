@@ -180,8 +180,10 @@ html[data-theme="dark"] .dso-btn-primary,html[data-theme="dark"] .dso-btn.dso-bt
 .dso-ai-prompt-btn{background:var(--hub-surface-2)!important;border:1px solid var(--hub-border)!important;color:var(--hub-text-2)!important}
 .dso-ai-prompt-btn:hover{border-color:var(--hub-accent-border)!important}
 .dso-drawer-backdrop{background:rgba(16,24,40,.5)!important}
-img.dso-brand-logo-img,img.dso-footer-logo{filter:none!important}
-html[data-theme="dark"] img.dso-brand-logo-img,html[data-theme="dark"] img.dso-footer-logo{filter:brightness(0) invert(1)!important}
+.dso-topbar-brand img,.dso-sidebar-logo img,img.dso-brand-logo-img,img.dso-footer-logo,img.dso-mobile-footer-logo,html[data-theme="dark"] img.dso-brand-logo-img,html[data-theme="dark"] img.dso-footer-logo{filter:none!important}
+img.dso-logo-dark{display:none!important}
+html[data-theme="dark"] img.dso-logo-light{display:none!important}
+html[data-theme="dark"] img.dso-logo-dark{display:block!important}
 
 /* ---------- Dashboard (djdb) : store-manager layout ---------- */
 .djdb-wrap{color:var(--hub-text)!important;background:transparent!important;border-radius:0!important}
